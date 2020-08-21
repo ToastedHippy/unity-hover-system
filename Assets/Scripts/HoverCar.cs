@@ -9,6 +9,7 @@ public class HoverCar : MonoBehaviour
     public GameObject hoverEngineObjBR;
     public GameObject hoverEngineObjBL;
 
+    public float rotationAcceleration = 1.0f;
     public float movingAcceleration = 5.0f;
     public float hoverHeight = 1.0f;
 
@@ -36,6 +37,7 @@ public class HoverCar : MonoBehaviour
         {
             he.hoverHeight = hoverHeight;
             he.movingAcceleration = movingAcceleration;
+            he.rotationAcceleration = rotationAcceleration;
         }
     }
 

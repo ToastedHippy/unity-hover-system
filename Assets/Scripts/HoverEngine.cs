@@ -19,6 +19,8 @@ public class HoverEngine : MonoBehaviour
 
     public float hoverHeight = 2.0f;
     public float movingAcceleration = 1.0f;
+
+    public float rotationAcceleration = 1.0f;
     
     private Rigidbody _rigidBody;
 
@@ -77,8 +79,8 @@ public class HoverEngine : MonoBehaviour
         Vector3 v = _rigidBody.velocity;
         float vM = Vector3.Magnitude(v);
 
-        Debug.DrawRay(transform.position, v, Color.green, 0.2f);
-        Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.up), Color.gray, 0.2f);
+        // Debug.DrawRay(transform.position, v, Color.green, 0.2f);
+        // Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.up), Color.gray, 0.2f);
 
         float angle = Vector3.Angle(v, transform.TransformDirection(Vector3.up));
         bool needToStabilize = (Mathf.Round(vM * 10) / 10 > 0 && angle < 90);
@@ -88,7 +90,7 @@ public class HoverEngine : MonoBehaviour
             
             float stabilizationM = vM / Mathf.Sqrt(3);
 
-            stabilizationM = stabilizationM * (1 - angle / 90) * 200;
+            stabilizationM = stabilizationM * (1 - angle / 90) * 400;
 
             _rigidBody.AddForce(Vector3.down * stabilizationM);
 
@@ -146,10 +148,10 @@ public class HoverEngine : MonoBehaviour
         switch (_rotationDirection)
         {
             case RotationDirection.right:
-                _rigidBody.AddForce(transform.TransformDirection(Vector3.right) * 40, ForceMode.Force);
+                _rigidBody.AddForce(transform.TransformDirection(Vector3.right) * rotationAcceleration, ForceMode.Force);
                 break;
             case RotationDirection.left:
-                _rigidBody.AddForce(transform.TransformDirection(Vector3.left) * 40, ForceMode.Force);
+                _rigidBody.AddForce(transform.TransformDirection(Vector3.left) * rotationAcceleration, ForceMode.Force);
                 break;
             default:
                 break;
