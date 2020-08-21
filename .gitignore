@@ -1,0 +1,25 @@
+.vscode/
+Library/
+Assets/Karting/
+Assets/Gizmos/
+Assets/Mod Assets
+
+Logs/
+ProjectSettings/
+Temp/
+UserSettings/
+Packages/
+obj/Debug/
+
+Assembly-CSharp-Editor.csproj
+Assembly-CSharp.csproj
+hover-car.sln
+InitCodeMarker
+Assets/Gizmos.meta
+Assets/HE_mat.mat
+Assets/HE_mat.mat.meta
+Assets/Karting.meta
+Assets/Mod Assets.meta
+Assets/Prefabs.meta
+Assets/Scenes.meta
+Assets/Scripts.meta
