@@ -23,8 +23,7 @@ public class Stabilizer : MonoBehaviour
         Vector3 v = _rigidBody.velocity;
         float vM = Vector3.Magnitude(v);
 
-        // Debug.DrawRay(transform.position, v, Color.green, 0.2f);
-        // Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.up), Color.gray, 0.2f);
+        Debug.DrawRay(transform.position, v, Color.green, 0.2f);
 
         float angle = Vector3.Angle(v, transform.TransformDirection(Vector3.up));
         bool needToStabilize = (Mathf.Round(vM * 10) / 10 > 0 && angle < 90);
@@ -33,9 +32,10 @@ public class Stabilizer : MonoBehaviour
 
         if (needToStabilize) {
             
-            float stabilizationM = (vM / Mathf.Sqrt(3)) * (1 - angle / 90) * 400;
+            float stabilizationM = (vM / Mathf.Sqrt(3)) * (1 - angle / 90) * 800;
 
-            _rigidBody.AddForce(Vector3.down * stabilizationM);
+            _rigidBody.AddForce(transform.TransformDirection(Vector3.down) * stabilizationM);
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * stabilizationM * 0.01f);
         }
 
     }

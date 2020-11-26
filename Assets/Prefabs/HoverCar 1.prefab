@@ -1,5 +1,33 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!138 &518641556230206978
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175107468832926953}
+  m_ConnectedBody: {fileID: 2633649171411202673}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
+--- !u!138 &4348601763337305874
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102468211646985311}
+  m_ConnectedBody: {fileID: 2633649171411202673}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &2633649171411202672
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,10 +41,6 @@ GameObject:
   - component: {fileID: 2633649171411202687}
   - component: {fileID: 2633649171411202686}
   - component: {fileID: 2633649171411202673}
-  - component: {fileID: 2633649171411202682}
-  - component: {fileID: 2633649171411202683}
-  - component: {fileID: 2633649171411202680}
-  - component: {fileID: 2633649171411202681}
   m_Layer: 0
   m_Name: CarBody
   m_TagString: Untagged
@@ -120,62 +144,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!138 &2633649171411202682
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2633649171411202672}
-  m_ConnectedBody: {fileID: 2888975196873086918}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
---- !u!138 &2633649171411202683
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2633649171411202672}
-  m_ConnectedBody: {fileID: 7952023335444980395}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
---- !u!138 &2633649171411202680
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2633649171411202672}
-  m_ConnectedBody: {fileID: 6732083250964257035}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
---- !u!138 &2633649171411202681
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2633649171411202672}
-  m_ConnectedBody: {fileID: 3987057039338753904}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &2900295407144755601
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +204,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 30f21effbcbbc5940b561cc9b2dd36dd, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -271,6 +239,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!138 &6745312091856689295
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6584692598195913010}
+  m_ConnectedBody: {fileID: 2633649171411202673}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &7103600318065611920
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +313,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 30f21effbcbbc5940b561cc9b2dd36dd, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -366,6 +348,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!138 &7865078503142377280
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7518739907353311890}
+  m_ConnectedBody: {fileID: 2633649171411202673}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &7979312881470278449
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,10 +410,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a269c495e03c204aa9dfe8e91508b8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverEngineFR: {fileID: 175107468832926953}
-  hoverEngineFL: {fileID: 7518739907353311890}
-  hoverEngineBR: {fileID: 6584692598195913010}
-  hoverEngineBL: {fileID: 2102468211646985311}
+  reactiveEnginesGO: []
+  stabilizers: []
+  hoverHeight: 1
+  maxHoverForcePercent: 1
+  hoverForceActionDistance: 5
+  maxHoverEngineRotationAngle: 90
 --- !u!1 &8233556324105834879
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,7 +476,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 30f21effbcbbc5940b561cc9b2dd36dd, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -573,7 +571,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 30f21effbcbbc5940b561cc9b2dd36dd, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -618,7 +616,7 @@ PrefabInstance:
     - target: {fileID: 2348821997932554386, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 30f21effbcbbc5940b561cc9b2dd36dd, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 2348821997932554390, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
       propertyPath: m_Name
       value: HoverEngineFR
@@ -689,11 +687,6 @@ GameObject:
 --- !u!4 &175107468832926952 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2348821997932554391, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
-  m_PrefabInstance: {fileID: 2519388479136810111}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &3987057039338753904 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 1558937312843827983, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
   m_PrefabInstance: {fileID: 2519388479136810111}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4446678577758362825
@@ -783,11 +776,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2348821997932554391, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
   m_PrefabInstance: {fileID: 4446678577758362825}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &2888975196873086918 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 1558937312843827983, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
-  m_PrefabInstance: {fileID: 4446678577758362825}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5246516774349591044
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -867,11 +855,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2348821997932554391, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
   m_PrefabInstance: {fileID: 5246516774349591044}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &6732083250964257035 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 1558937312843827983, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
-  m_PrefabInstance: {fileID: 5246516774349591044}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8933230909175900580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -941,18 +924,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
---- !u!4 &6584692598195913011 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2348821997932554391, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
-  m_PrefabInstance: {fileID: 8933230909175900580}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &7952023335444980395 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 1558937312843827983, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
-  m_PrefabInstance: {fileID: 8933230909175900580}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6584692598195913010 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2348821997932554390, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
+  m_PrefabInstance: {fileID: 8933230909175900580}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6584692598195913011 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2348821997932554391, guid: b93b7aae46233fb439fea7d7fc90c0b9, type: 3}
   m_PrefabInstance: {fileID: 8933230909175900580}
   m_PrefabAsset: {fileID: 0}

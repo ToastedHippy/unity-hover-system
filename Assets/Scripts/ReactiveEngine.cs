@@ -5,31 +5,27 @@ using UnityEngine;
 
 public class ReactiveEngine : MonoBehaviour
 {
-
-    public float hoverHeight = 2.0f;
     
     private Rigidbody _rigidBody;
 
-    public bool started = false;
-
-    
+    private bool _started = false;
+    private Vector3 _currentForce = Vector3.zero;
 
     public void startEngine() {
-        started = true;
+        _started = true;
     }
 
     public void stopEngine() {
-        started = false;
-    }
-
-    public void rotate() {
-        
+        _started = false;
     }
 
     public void thrust(float magnitude) {
-        if (started) {
+        if (_started) {
             Vector3 force = transform.TransformDirection(Vector3.up) * magnitude;
+
             _rigidBody.AddForce(force, ForceMode.Force);
+
+            _currentForce = force;
 
             Debug.DrawRay(transform.position, force * 0.01f, Color.yellow);
         }
@@ -40,10 +36,5 @@ public class ReactiveEngine : MonoBehaviour
     }
 
     void Update() {
-        
-    }
-
-    void FixedUpdate() {
-        if (!started) { return; }
     }
 }

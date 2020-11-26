@@ -109,8 +109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a19e2de97277e5a408a0ab6152b37b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverHeight: 2
-  started: 0
 --- !u!54 &1558937312843827983
 Rigidbody:
   m_ObjectHideFlags: 0
