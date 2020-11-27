@@ -5,77 +5,90 @@ using UnityEngine;
 public class HoverController : MonoBehaviour
 {
    
-    public List<GameObject> reactiveEnginesGO;
+    public List<GameObject> reactiveEngines;
     public List<GameObject> stabilizers;
-
     public float hoverHeight = 1.0f;
 
-    private ReactiveEngine[] _reactiveEngines;
-    private Stabilizer[] _stabilizers;
-
-    public float maxHoverForcePercent = 1.0f;
+    public float maxHoverForcePercent = 2.0f;
 
     public float hoverForceActionDistance = 5.0f;
 
-    public float maxHoverEngineRotationAngle = 90f;
-
-    private float _xAngle = 0f;
-    private float _zAngle = 0f;
-
-    public bool _isBack = false;
-    public bool _isRight = false;
-
-    private void _setReactiveEngines() {
-
-        ReactiveEngine[] engines = new ReactiveEngine[reactiveEnginesGO.Count];
-
-        foreach(GameObject re in reactiveEnginesGO)
-        {
-            engines[reactiveEnginesGO.IndexOf(re)] = (ReactiveEngine)re.GetComponent(typeof(ReactiveEngine));
-        }
-
-        _reactiveEngines = engines;
-    }
-
-    private void _setStabilizers() {
-
-        Stabilizer[] stabs = new Stabilizer[stabilizers.Count];
-
-        foreach(GameObject s in stabilizers)
-        {
-            stabs[stabilizers.IndexOf(s)] = (Stabilizer)s.GetComponent(typeof(Stabilizer));
-        }
-
-        _stabilizers = stabs;
-    }
-
     public void startEngines() {
         
-        foreach (ReactiveEngine re in _reactiveEngines)
+        foreach(GameObject re in reactiveEngines)
         {
-            re.startEngine();
+            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
+            r.startEngine();
         }
     }
 
     public void moveForvard() {
-        foreach(GameObject re in reactiveEnginesGO)
+        foreach(GameObject re in reactiveEngines)
         {
-            ConfigurableJointRotator rotator = re.GetComponent<ConfigurableJointRotator>();
-            rotator.Rotate(new Vector3(45, 0, 0) * Time.deltaTime);
+            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
+            r.rotateNozzleInDirection(NozzleRotationDirection.Forward);
         }
     }
 
     public void moveBackward() {
-        foreach(GameObject re in reactiveEnginesGO)
+        foreach(GameObject re in reactiveEngines)
         {
-            ConfigurableJointRotator rotator = re.GetComponent<ConfigurableJointRotator>();
-            rotator.Rotate(new Vector3(-45, 0, 0) * Time.deltaTime);
+            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
+            r.rotateNozzleInDirection(NozzleRotationDirection.Backward);
+        }
+    }
+
+    public void moveToDefault() {
+        foreach(GameObject re in reactiveEngines)
+        {
+            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
+            r.rotateNozzleToDefault(NozzleRotationAxis.X);
+        }
+    }
+
+    public void turnRight() {
+        foreach(GameObject re in reactiveEngines)
+        {
+            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
+
+            if (re.tag == "front reactive engine") {
+                r.rotateNozzleInDirection(NozzleRotationDirection.Right);
+            }
+
+            if (re.tag == "back reactive engine") {
+                r.rotateNozzleInDirection(NozzleRotationDirection.Left);
+            }
+            
+        }
+    }
+
+    public void turnLeft() {
+        foreach(GameObject re in reactiveEngines)
+        {
+            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
+
+            if (re.tag == "front reactive engine") {
+                r.rotateNozzleInDirection(NozzleRotationDirection.Left);
+            }
+
+            if (re.tag == "back reactive engine") {
+                r.rotateNozzleInDirection(NozzleRotationDirection.Right);
+            }
+            
+        }
+    }
+
+    public void turnToDefault() {
+        foreach(GameObject re in reactiveEngines)       
+        {
+            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
+            r.rotateNozzleToDefault(NozzleRotationAxis.Z);
         }
     }
 
     private float _calcHoverForce(float distanceFromSurface) {
 
-        float needForce = (1 + 1 + 1 + 25) * 9.81f; // engine + stabilizer + 0.25 car body mass
+        float needForce = (10 + 1 + 25f) * 9.81f; // engine + stabilizer + 0.25 car body mass
         float maxForce = needForce * maxHoverForcePercent;
         float maxDistance = Mathf.Max(hoverForceActionDistance, hoverHeight);
         float forceDiff = maxForce - needForce;
@@ -93,12 +106,13 @@ public class HoverController : MonoBehaviour
     }
 
     private void _thrustEngines() {
-        foreach(GameObject re in reactiveEnginesGO) {
-            thrustEngine(re);
+        foreach(GameObject re in reactiveEngines)
+        {
+            _thrustEngine(re);
         }
     }
 
-    private void thrustEngine(GameObject engine) {
+    private void _thrustEngine(GameObject engine) {
         RaycastHit hit;
         Vector3 castOrigin = engine.transform.position;
         Vector3 castDirection = Vector3.down;
@@ -111,61 +125,52 @@ public class HoverController : MonoBehaviour
             // Debug.Log(engine.name + ' ' + hoverMagnitude + ' ' + hit.distance + ' ' + hit.collider.gameObject.name);
             Debug.DrawRay(castOrigin, castDirection * hit.distance, Color.red);
 
-            _updateXAngle();
-            _updateZAngle();
+            float angle = Vector3.Angle(re.transform.TransformDirection(Vector3.up), re.forceDirection);
 
-            float totalMagnitude = hoverMagnitude / Mathf.Cos(Mathf.Deg2Rad * _xAngle);
+            float cos = Mathf.Cos(Mathf.Deg2Rad * angle);
+            float thrustMagnitude = hoverMagnitude / cos;
 
-            ConfigurableJointRotator rotator = re.GetComponent<ConfigurableJointRotator>();
-            rotator.Rotate(new Vector3(_xAngle, 0, _zAngle));
-
-            re.thrust(hoverMagnitude);      
+            re.thrust(thrustMagnitude);      
         }
-    }
-
-    private void _updateXAngle() {
-        if (Input.GetKey(KeyCode.W)) {
-            _xAngle += 1f;
-        }
-
-        if (Input.GetKey(KeyCode.S)) {
-            _xAngle -= 1f;
-        }
-        
-    }
-
-    private void _updateZAngle() {
-        if (Input.GetKey(KeyCode.A)) {
-            _zAngle += _isBack ? -0.2f : 0.2f;
-        }
-
-        if (Input.GetKey(KeyCode.D)) {
-            _zAngle += _isBack ? 0.2f : -0.2f;
-        }
-        
     }
 
     private void _activateStabilizers() {
-        foreach (Stabilizer s in _stabilizers)
+        foreach (GameObject s in stabilizers)
         {
-            s.activate();
+            Stabilizer st = s.GetComponent<Stabilizer>();
+            st.activate();
         }
     }
 
     void FixedUpdate() {
         _thrustEngines();
+
     }
     void Start() 
     {
-        _setReactiveEngines();
-        _setStabilizers();
-
-        _activateStabilizers();
         startEngines();
+        _activateStabilizers();
     }
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.W)) {
+            moveForvard();
+        } else if (Input.GetKey(KeyCode.S)) {
+            moveBackward();
+        } else {
+            moveToDefault();
+        }
+
+        if (Input.GetKey(KeyCode.A)) {
+            turnLeft();
+        } else if (Input.GetKey(KeyCode.D)) {
+            turnRight();
+        } else {
+            turnToDefault();
+        }
+
         
     }
+    
 }
