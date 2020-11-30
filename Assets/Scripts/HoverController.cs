@@ -11,8 +11,6 @@ public class HoverController : MonoBehaviour
 
     public float maxHoverForcePercent = 2.0f;
 
-    public float hoverForceActionDistance = 5.0f;
-
     public void startEngines() {
         
         foreach(GameObject re in reactiveEngines)
@@ -90,7 +88,6 @@ public class HoverController : MonoBehaviour
 
         float needForce = (10 + 1 + 25f) * 9.81f; // engine + stabilizer + 0.25 car body mass
         float maxForce = needForce * maxHoverForcePercent;
-        float maxDistance = Mathf.Max(hoverForceActionDistance, hoverHeight);
         float forceDiff = maxForce - needForce;
 
         float hoverForce = 0.0f;
@@ -99,7 +96,7 @@ public class HoverController : MonoBehaviour
             hoverForce = Mathf.Clamp((1 - distanceFromSurface / hoverHeight) * forceDiff, 0, forceDiff) + needForce;
         }
         else {
-            hoverForce = Mathf.Clamp((1 - ((distanceFromSurface - hoverHeight) / (maxDistance - hoverHeight))) * needForce, 0, needForce);
+            hoverForce = Mathf.Clamp((1 - (distanceFromSurface - hoverHeight)) * needForce, 0, needForce);
         }
 
          return hoverForce;
@@ -115,11 +112,11 @@ public class HoverController : MonoBehaviour
     private void _thrustEngine(GameObject engine) {
         RaycastHit hit;
         Vector3 castOrigin = engine.transform.position;
-        Vector3 castDirection = Vector3.down;
+        Vector3 castDirection = engine.transform.TransformDirection(Vector3.down);
         
         ReactiveEngine re = (ReactiveEngine)engine.GetComponent(typeof(ReactiveEngine));
 
-        if (Physics.Raycast(castOrigin, castDirection, out hit, hoverForceActionDistance, ~(1 << 8)))
+        if (Physics.Raycast(castOrigin, castDirection, out hit, hoverHeight * 2, ~(1 << 8)))
         {
             float hoverMagnitude = _calcHoverForce(hit.distance);
             // Debug.Log(engine.name + ' ' + hoverMagnitude + ' ' + hit.distance + ' ' + hit.collider.gameObject.name);
