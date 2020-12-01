@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour
         
 
         _rotation.y += Input.GetAxis("Mouse X") * mouseSensitivity;
-        _rotation.x += Input.GetAxis("Mouse Y") * mouseSensitivity;
+        // _rotation.x += Input.GetAxis("Mouse Y") * mouseSensitivity;
 
         transform.rotation = Quaternion.Euler(_rotation.x, _rotation.y, 0);
     }

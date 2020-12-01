@@ -126,8 +126,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a19e2de97277e5a408a0ab6152b37b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationLimitMax: {x: 50, y: 0, z: 50}
-  rotationLimitMin: {x: -50, y: 0, z: -50}
+  nozzleRotationLimitMax: {x: 40, y: 0, z: 20}
+  nozzleRotationLimitMin: {x: -40, y: 0, z: -20}
+  nozzleRotationSpeed: 1
+  force: {x: 0, y: 0, z: 0}
 --- !u!1 &8576498362673066015
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,13 +156,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8576498362673066015}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -0.4732418, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.88805, z: 0.5}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.88805}
   m_Children: []
   m_Father: {fileID: 6313315483061988783}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &8576498362673066010
 MeshFilter:
   m_ObjectHideFlags: 0

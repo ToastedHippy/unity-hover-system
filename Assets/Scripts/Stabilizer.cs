@@ -23,7 +23,7 @@ public class Stabilizer : MonoBehaviour
         Vector3 v = _rigidBody.velocity;
         float vM = Vector3.Magnitude(v);
 
-        Debug.DrawRay(transform.position, v, Color.green, 0.2f);
+        // Debug.DrawRay(transform.position, v, Color.green, 0.2f);
 
         float angle = Vector3.Angle(v, transform.TransformDirection(Vector3.up));
         bool needToStabilize = (Mathf.Round(vM * 10) / 10 > 0 && angle < 90);

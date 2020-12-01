@@ -11,76 +11,18 @@ public class HoverController : MonoBehaviour
 
     public float maxHoverForcePercent = 2.0f;
 
+    public float maxEngineForvardMovingForce = 500f;
+    public float maxEngineBackvardMovingForce = 300f;
+    public float movingAcceleration = 100f;
+    public float maxEngineTurningForce = 500f;
+    public float turningAcceleration = 100f;
+
     public void startEngines() {
         
         foreach(GameObject re in reactiveEngines)
         {
             ReactiveEngine r = re.GetComponent<ReactiveEngine>();
             r.startEngine();
-        }
-    }
-
-    public void moveForvard() {
-        foreach(GameObject re in reactiveEngines)
-        {
-            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
-            r.rotateNozzleInDirection(NozzleRotationDirection.Forward);
-        }
-    }
-
-    public void moveBackward() {
-        foreach(GameObject re in reactiveEngines)
-        {
-            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
-            r.rotateNozzleInDirection(NozzleRotationDirection.Backward);
-        }
-    }
-
-    public void moveToDefault() {
-        foreach(GameObject re in reactiveEngines)
-        {
-            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
-            r.rotateNozzleToDefault(NozzleRotationAxis.X);
-        }
-    }
-
-    public void turnRight() {
-        foreach(GameObject re in reactiveEngines)
-        {
-            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
-
-            if (re.tag == "front reactive engine") {
-                r.rotateNozzleInDirection(NozzleRotationDirection.Right);
-            }
-
-            if (re.tag == "back reactive engine") {
-                r.rotateNozzleInDirection(NozzleRotationDirection.Left);
-            }
-            
-        }
-    }
-
-    public void turnLeft() {
-        foreach(GameObject re in reactiveEngines)
-        {
-            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
-
-            if (re.tag == "front reactive engine") {
-                r.rotateNozzleInDirection(NozzleRotationDirection.Left);
-            }
-
-            if (re.tag == "back reactive engine") {
-                r.rotateNozzleInDirection(NozzleRotationDirection.Right);
-            }
-            
-        }
-    }
-
-    public void turnToDefault() {
-        foreach(GameObject re in reactiveEngines)       
-        {
-            ReactiveEngine r = re.GetComponent<ReactiveEngine>();
-            r.rotateNozzleToDefault(NozzleRotationAxis.Z);
         }
     }
 
@@ -119,16 +61,103 @@ public class HoverController : MonoBehaviour
         if (Physics.Raycast(castOrigin, castDirection, out hit, hoverHeight * 2, ~(1 << 8)))
         {
             float hoverMagnitude = _calcHoverForce(hit.distance);
+            Vector3 hoverDirection = Vector3.up;
+            Vector3 hoverForce = hoverDirection * hoverMagnitude;
             // Debug.Log(engine.name + ' ' + hoverMagnitude + ' ' + hit.distance + ' ' + hit.collider.gameObject.name);
-            Debug.DrawRay(castOrigin, castDirection * hit.distance, Color.red);
+            Debug.DrawRay(castOrigin, engine.transform.TransformDirection(hoverForce) * 0.01f, Color.red);
 
-            float angle = Vector3.Angle(re.transform.TransformDirection(Vector3.up), re.forceDirection);
+            Vector3 movingForce = getMovingForceForEngine(engine);
+            Debug.DrawRay(castOrigin, engine.transform.TransformDirection(movingForce) * 0.01f, Color.magenta);
 
-            float cos = Mathf.Cos(Mathf.Deg2Rad * angle);
-            float thrustMagnitude = hoverMagnitude / cos;
-
-            re.thrust(thrustMagnitude);      
+            Vector3 turningForce = getTurningForceForEngine(engine);
+            Debug.DrawRay(castOrigin, engine.transform.TransformDirection(turningForce) * 0.01f, Color.blue);
+            
+            re.thrust(movingForce + hoverForce + turningForce);      
         }
+    }
+
+    private Vector3 getMovingForceForEngine(GameObject engine) {
+        Vector3 movingForce = Vector3.zero;
+
+        ReactiveEngine re = (ReactiveEngine)engine.GetComponent(typeof(ReactiveEngine));
+
+        movingForce.z = re.force.z;
+
+        if (Input.GetKey(KeyCode.W)) {
+            
+            if (movingForce.z + movingAcceleration * Time.deltaTime >= maxEngineForvardMovingForce) {
+                movingForce.z = maxEngineForvardMovingForce;
+            } else {
+                movingForce.z += movingAcceleration * Time.deltaTime;
+            }
+            
+        } else if (Input.GetKey(KeyCode.S)) {
+            if (movingForce.z - movingAcceleration * Time.deltaTime <= -maxEngineBackvardMovingForce) {
+                movingForce.z = -maxEngineBackvardMovingForce;
+            } else {
+                movingForce.z -= movingAcceleration * Time.deltaTime;
+            }
+        } else {
+            if (movingForce.z < 0) {
+                if (movingForce.z + movingAcceleration * Time.deltaTime >= 0) {
+                    movingForce.z = 0;
+                } else {
+                    movingForce.z += movingAcceleration * Time.deltaTime;
+                }
+            } else if (movingForce.z > 0) {
+                if (movingForce.z - movingAcceleration * Time.deltaTime <= 0) {
+                    movingForce.z = 0;
+                } else {
+                    movingForce.z -= movingAcceleration * Time.deltaTime;
+                }   
+            }
+        }
+
+        if (movingForce.z < 0) {
+            Debug.Log("");
+        }
+
+        return movingForce;
+    }
+
+    private Vector3 getTurningForceForEngine(GameObject engine) {
+        Vector3 turningForce = Vector3.zero;
+
+        ReactiveEngine re = (ReactiveEngine)engine.GetComponent(typeof(ReactiveEngine));
+
+        turningForce.x = re.force.x;
+
+        if ((Input.GetKey(KeyCode.D) && engine.tag == "front reactive engine") || (Input.GetKey(KeyCode.A) && engine.tag == "back reactive engine")) {
+            
+            if (turningForce.x + turningAcceleration * Time.deltaTime >= maxEngineTurningForce) {
+                turningForce.x = maxEngineTurningForce;
+            } else {
+                turningForce.x += turningAcceleration * Time.deltaTime;
+            }
+            
+        } else if ((Input.GetKey(KeyCode.D) && engine.tag == "back reactive engine") || (Input.GetKey(KeyCode.A) && engine.tag == "front reactive engine")) {
+            if (turningForce.x - turningAcceleration * Time.deltaTime <= -maxEngineTurningForce) {
+                turningForce.x = -maxEngineTurningForce;
+            } else {
+                turningForce.x -= turningAcceleration * Time.deltaTime;
+            }
+        } else {
+            if (turningForce.x < 0) {
+                if (turningForce.x + movingAcceleration * Time.deltaTime >= 0) {
+                    turningForce.x = 0;
+                } else {
+                    turningForce.x += movingAcceleration * Time.deltaTime;
+                }
+            } else if (turningForce.x > 0) {
+                if (turningForce.x - movingAcceleration * Time.deltaTime <= 0) {
+                    turningForce.x = 0;
+                } else {
+                    turningForce.x -= movingAcceleration * Time.deltaTime;
+                }   
+            }
+        }
+
+        return turningForce;
     }
 
     private void _activateStabilizers() {
@@ -140,6 +169,17 @@ public class HoverController : MonoBehaviour
     }
 
     void FixedUpdate() {
+
+        
+
+        // if (Input.GetKey(KeyCode.A)) {
+        //     turnLeft();
+        // } else if (Input.GetKey(KeyCode.D)) {
+        //     turnRight();
+        // } else {
+        //     turnToDefault();
+        // }
+
         _thrustEngines();
 
     }
@@ -151,21 +191,6 @@ public class HoverController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.W)) {
-            moveForvard();
-        } else if (Input.GetKey(KeyCode.S)) {
-            moveBackward();
-        } else {
-            moveToDefault();
-        }
-
-        if (Input.GetKey(KeyCode.A)) {
-            turnLeft();
-        } else if (Input.GetKey(KeyCode.D)) {
-            turnRight();
-        } else {
-            turnToDefault();
-        }
 
         
     }
