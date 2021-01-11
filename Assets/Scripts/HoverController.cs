@@ -7,9 +7,11 @@ public class HoverController : MonoBehaviour
    
     public List<GameObject> reactiveEngines;
     public List<GameObject> stabilizers;
+    public List<GameObject> movingStabilizers;
+    public GameObject body;
     public float hoverHeight = 1.0f;
 
-    public float maxHoverForcePercent = 2.0f;
+    public float bounceModifier = 2.0f;
 
     public float maxEngineForvardMovingForce = 500f;
     public float maxEngineBackvardMovingForce = 300f;
@@ -29,7 +31,7 @@ public class HoverController : MonoBehaviour
     private float _calcHoverForce(float distanceFromSurface) {
 
         float needForce = (10 + 1 + 25f) * 9.81f; // engine + stabilizer + 0.25 car body mass
-        float maxForce = needForce * maxHoverForcePercent;
+        float maxForce = needForce * bounceModifier;
         float forceDiff = maxForce - needForce;
 
         float hoverForce = 0.0f;
@@ -58,7 +60,7 @@ public class HoverController : MonoBehaviour
         
         ReactiveEngine re = (ReactiveEngine)engine.GetComponent(typeof(ReactiveEngine));
 
-        if (Physics.Raycast(castOrigin, castDirection, out hit, hoverHeight * 2, ~(1 << 8)))
+        if (Physics.Raycast(castOrigin, castDirection, out hit, hoverHeight * 5, ~(1 << 8)))
         {
             float hoverMagnitude = _calcHoverForce(hit.distance);
             Vector3 hoverDirection = Vector3.up;
@@ -83,6 +85,9 @@ public class HoverController : MonoBehaviour
 
         movingForce.z = re.force.z;
 
+        bool isMovingForvard = getForvardMovingSpeed() > 0;
+        bool isMovingBackvard = getForvardMovingSpeed() < 0;
+
         if (Input.GetKey(KeyCode.W)) {
             
             if (movingForce.z + movingAcceleration * Time.deltaTime >= maxEngineForvardMovingForce) {
@@ -95,7 +100,12 @@ public class HoverController : MonoBehaviour
             if (movingForce.z - movingAcceleration * Time.deltaTime <= -maxEngineBackvardMovingForce) {
                 movingForce.z = -maxEngineBackvardMovingForce;
             } else {
-                movingForce.z -= movingAcceleration * Time.deltaTime;
+                if (isMovingForvard && movingForce.z - movingAcceleration * Time.deltaTime <= 0) {
+                    movingForce.z = 0;
+                } else {
+                    movingForce.z -= movingAcceleration * Time.deltaTime;
+                }
+                
             }
         } else {
             if (movingForce.z < 0) {
@@ -111,10 +121,6 @@ public class HoverController : MonoBehaviour
                     movingForce.z -= movingAcceleration * Time.deltaTime;
                 }   
             }
-        }
-
-        if (movingForce.z < 0) {
-            Debug.Log("");
         }
 
         return movingForce;
@@ -168,25 +174,105 @@ public class HoverController : MonoBehaviour
         }
     }
 
+    private void _activateMovingStabilizers() {
+        foreach (GameObject s in movingStabilizers)
+        {
+            movingStabilizer st = s.GetComponent<movingStabilizer>();
+            st.activate();
+        }
+    }
+
+
+    private void _stabilizeMoving() {
+
+        Rigidbody bodyRB = body.GetComponent<Rigidbody>();
+        float bodyV = Mathf.Round(bodyRB.velocity.magnitude * 10) / 10;
+
+        bool isMoving = bodyV != 0;
+        bool isMovingForvard = getForvardMovingSpeed() > 0;
+        bool isMovingBackvard = getForvardMovingSpeed() < 0;
+        bool isMovingRight = getRightMovingSpeed() > 0;
+        bool isMovingLeft = getRightMovingSpeed() < 0;
+
+        if (Input.GetKey(KeyCode.W)) {
+            if (!isMovingForvard) {
+                foreach (GameObject s in movingStabilizers)
+                {
+                    movingStabilizer st = s.GetComponent<movingStabilizer>();
+                    st.increaseForce(500f);
+                }
+            } else {
+                foreach (GameObject s in movingStabilizers)
+                {
+                    movingStabilizer st = s.GetComponent<movingStabilizer>();
+                    st.decreaseForce(1000f);
+                }
+            }
+            
+        } else if (Input.GetKey(KeyCode.S)) {
+            if (!isMovingBackvard) {
+                foreach (GameObject s in movingStabilizers)
+                {
+                    movingStabilizer st = s.GetComponent<movingStabilizer>();
+                    st.increaseForce(500f);
+                }
+            } else {
+                foreach (GameObject s in movingStabilizers)
+                {
+                    movingStabilizer st = s.GetComponent<movingStabilizer>();
+                    st.decreaseForce(1000f);
+                }
+            }
+            
+        } else {
+           if (isMoving) {
+                foreach (GameObject s in movingStabilizers)
+                {
+                    movingStabilizer st = s.GetComponent<movingStabilizer>();
+                    st.increaseForce(300f);
+                }
+           } else {
+               foreach (GameObject s in movingStabilizers)
+                {
+                    movingStabilizer st = s.GetComponent<movingStabilizer>();
+                    st.decreaseForce(300f);
+                }
+           }
+        }
+    }
+
+    private float getForvardMovingSpeed() {
+
+        Rigidbody bodyRB = body.GetComponent<Rigidbody>();
+        Vector3 v = bodyRB.velocity;
+
+        Vector3 locV = body.transform.InverseTransformDirection(v);
+
+        return locV.z;
+
+    }
+
+    private float getRightMovingSpeed() {
+        Rigidbody bodyRB = body.GetComponent<Rigidbody>();
+        Vector3 v = bodyRB.velocity;
+
+        Vector3 locV = body.transform.InverseTransformDirection(v);
+
+        return locV.x;
+
+    }
+
     void FixedUpdate() {
 
-        
-
-        // if (Input.GetKey(KeyCode.A)) {
-        //     turnLeft();
-        // } else if (Input.GetKey(KeyCode.D)) {
-        //     turnRight();
-        // } else {
-        //     turnToDefault();
-        // }
-
         _thrustEngines();
+        _stabilizeMoving();
 
     }
     void Start() 
     {
         startEngines();
         _activateStabilizers();
+        _activateMovingStabilizers();
     }
 
     void Update()

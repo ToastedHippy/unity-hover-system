@@ -18,7 +18,9 @@ public class Stabilizer : MonoBehaviour
 
     public void stabilize() {
 
-        if (!_active) { return; }
+        if (!_active) { 
+            return; 
+        }
 
         Vector3 v = _rigidBody.velocity;
         float vM = Vector3.Magnitude(v);
