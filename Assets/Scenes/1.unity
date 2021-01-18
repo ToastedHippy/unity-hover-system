@@ -4086,14 +4086,14 @@ MonoBehaviour:
   - {fileID: 555132348}
   - {fileID: 2141928861}
   - {fileID: 1081596528}
+  body: {fileID: 493899727}
   hoverHeight: 2
-  maxHoverForcePercent: 10
-  maxEngineForvardMovingForce: 800
+  bounceModifier: 10
+  maxEngineForvardMovingForce: 1000
   maxEngineBackvardMovingForce: 800
-  movingAcceleration: 1500
-  breakCoeficient: 2
-  maxEngineTurningForce: 150
-  turningAcceleration: 600
+  movingAcceleration: 500
+  maxEngineTurningForce: 175
+  turningAcceleration: 650
 --- !u!4 &1459879528
 Transform:
   m_ObjectHideFlags: 0
@@ -4102,7 +4102,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1459879526}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -195.3, y: 3.8, z: -116.7}
+  m_LocalPosition: {x: 2.6, y: 3.8, z: -10.7}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 493899732}

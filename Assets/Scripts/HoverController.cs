@@ -7,7 +7,6 @@ public class HoverController : MonoBehaviour
    
     public List<GameObject> reactiveEngines;
     public List<GameObject> stabilizers;
-    public List<GameObject> movingStabilizers;
     public GameObject body;
     public float hoverHeight = 1.0f;
 
@@ -100,7 +99,7 @@ public class HoverController : MonoBehaviour
             if (movingForce.z - movingAcceleration * Time.deltaTime <= -maxEngineBackvardMovingForce) {
                 movingForce.z = -maxEngineBackvardMovingForce;
             } else {
-                if (isMovingForvard && movingForce.z - movingAcceleration * Time.deltaTime <= 0) {
+                if (isMoving() && movingForce.z - movingAcceleration * Time.deltaTime <= 0) {
                     movingForce.z = 0;
                 } else {
                     movingForce.z -= movingAcceleration * Time.deltaTime;
@@ -124,6 +123,14 @@ public class HoverController : MonoBehaviour
         }
 
         return movingForce;
+    }
+
+    private void stop(float coef) {
+        Rigidbody bodyRB = body.GetComponent<Rigidbody>();
+        Vector3 vDirection = bodyRB.velocity.normalized;
+
+        bodyRB.AddForce(vDirection * -1f * coef);
+
     }
 
     private Vector3 getTurningForceForEngine(GameObject engine) {
@@ -174,73 +181,15 @@ public class HoverController : MonoBehaviour
         }
     }
 
-    private void _activateMovingStabilizers() {
-        foreach (GameObject s in movingStabilizers)
-        {
-            movingStabilizer st = s.GetComponent<movingStabilizer>();
-            st.activate();
-        }
-    }
 
-
-    private void _stabilizeMoving() {
-
+    private bool isMoving() {
         Rigidbody bodyRB = body.GetComponent<Rigidbody>();
-        float bodyV = Mathf.Round(bodyRB.velocity.magnitude * 10) / 10;
+        Vector3 v = bodyRB.velocity;
 
-        bool isMoving = bodyV != 0;
-        bool isMovingForvard = getForvardMovingSpeed() > 0;
-        bool isMovingBackvard = getForvardMovingSpeed() < 0;
-        bool isMovingRight = getRightMovingSpeed() > 0;
-        bool isMovingLeft = getRightMovingSpeed() < 0;
+        Vector3 locV = body.transform.InverseTransformDirection(v);
 
-        if (Input.GetKey(KeyCode.W)) {
-            if (!isMovingForvard) {
-                foreach (GameObject s in movingStabilizers)
-                {
-                    movingStabilizer st = s.GetComponent<movingStabilizer>();
-                    st.increaseForce(500f);
-                }
-            } else {
-                foreach (GameObject s in movingStabilizers)
-                {
-                    movingStabilizer st = s.GetComponent<movingStabilizer>();
-                    st.decreaseForce(1000f);
-                }
-            }
-            
-        } else if (Input.GetKey(KeyCode.S)) {
-            if (!isMovingBackvard) {
-                foreach (GameObject s in movingStabilizers)
-                {
-                    movingStabilizer st = s.GetComponent<movingStabilizer>();
-                    st.increaseForce(500f);
-                }
-            } else {
-                foreach (GameObject s in movingStabilizers)
-                {
-                    movingStabilizer st = s.GetComponent<movingStabilizer>();
-                    st.decreaseForce(1000f);
-                }
-            }
-            
-        } else {
-           if (isMoving) {
-                foreach (GameObject s in movingStabilizers)
-                {
-                    movingStabilizer st = s.GetComponent<movingStabilizer>();
-                    st.increaseForce(300f);
-                }
-           } else {
-               foreach (GameObject s in movingStabilizers)
-                {
-                    movingStabilizer st = s.GetComponent<movingStabilizer>();
-                    st.decreaseForce(300f);
-                }
-           }
-        }
+        return locV.magnitude != 0;
     }
-
     private float getForvardMovingSpeed() {
 
         Rigidbody bodyRB = body.GetComponent<Rigidbody>();
@@ -265,14 +214,26 @@ public class HoverController : MonoBehaviour
     void FixedUpdate() {
 
         _thrustEngines();
-        _stabilizeMoving();
+
+        if (Input.GetKey(KeyCode.W)) {
+            
+            
+            
+        } else if (Input.GetKey(KeyCode.S)) {
+            if (isMoving()) {
+                stop(3000);
+            }
+        } else {
+            if (isMoving()) {
+                stop(1000);
+            }
+        }
 
     }
     void Start() 
     {
         startEngines();
         _activateStabilizers();
-        _activateMovingStabilizers();
     }
 
     void Update()
